@@ -9,6 +9,10 @@ Complexity of common operations
 | O(n^2)     |               double nested loop               |
 | O(n^3)     |               triple nested loop               |
 
+What is the Time Complexity?
+
+Question 1
+
 ```js
 var countChars = function(str) {
   var count = 0; // operation 1
@@ -21,4 +25,14 @@ var countChars = function(str) {
 };
 
 countChars("dance"); // O(n+2) => O(n)
+```
+
+Question 2
+
+```js
+var countChars = function(str) {
+  return str.length; // operation 1 (cuz js keep track the length by property lookup)
+};
+
+countChars("dance"); // O(1)
 ```
