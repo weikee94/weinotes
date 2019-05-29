@@ -36,3 +36,58 @@ var countChars = function(str) {
 
 countChars("dance"); // O(1)
 ```
+
+Question 3
+
+```js
+var myList = ["hello", "hola"];
+
+myList.push("bonjour"); // O(1)
+
+myList.unshift(); // O(1)
+
+myList.shift(); // O(n)
+```
+
+Question 4
+
+```js
+const isUnique = arr => {
+  let result = true;
+
+  for (let i = 0; i < arr.length; i++) {
+    console.log(`---OUTER LOOP--- ${i}`);
+    for (let j = 0; j < arr.length; j++) {
+      console.log(`---INNER LOOP--- ${j}`);
+      if (i !== j && arr[i] === arr[j]) {
+        result = false;
+      }
+    }
+  }
+
+  return result;
+};
+
+console.log(isUnique([1, 2, 3]) === true); // O(n^2)
+```
+
+Question 5
+
+```js
+const isUnique = arr => {
+  const breadcrumbs = {};
+  let result = true;
+
+  for (let i = 0; i < arr.length; i++) {
+    console.log(`---Loop--- ${i}`);
+    if (breadcrumbs[arr[i]]) {
+      result = false;
+    } else {
+      breadcrumbs[arr[i]] = true; // object look up is constant
+    }
+  }
+  return result;
+};
+
+console.log(isUnique([1, 2, 3]) === true); // O(n, object lookup is 1)
+```
