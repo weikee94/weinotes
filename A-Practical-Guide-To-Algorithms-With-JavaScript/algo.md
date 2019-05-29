@@ -8,3 +8,17 @@ Complexity of common operations
 | O(n)       |      loop through the values of an array       |
 | O(n^2)     |               double nested loop               |
 | O(n^3)     |               triple nested loop               |
+
+```js
+var countChars = function(str) {
+  var count = 0; // operation 1
+
+  for (var i = 0; i < str.length; i++) {
+    count++; // operation n
+  }
+
+  return count; // operation 1
+};
+
+countChars("dance"); // O(n+2) => O(n)
+```
