@@ -91,3 +91,33 @@ const isUnique = arr => {
 
 console.log(isUnique([1, 2, 3]) === true); // O(n, object lookup is 1)
 ```
+
+Question 6
+
+1. Transform to unique sort.
+2. input: [4, 2, 3, 2, 3] => [2, 3, 4]
+
+```js
+const uniqSort = function(arr) {
+  const breadcrumbs = {};
+  let ans = [];
+  for (let i = 0; i < arr.length; i++) {
+    if (!breadcrumbs[arr[i]]) {
+      // * !undefined (这是true)
+      // 第一次遇见2 （i = 1）
+      //  breadcrumbs[2] 这个时候还没有2，return undefined
+      //    !undefined = true
+      //      这个时候set breadcrumbs[2] = true => {2: true}
+      // 第二次遇见2  (i = 2)
+      //  breadcrumbs[2] return true
+      //    !true = false
+      //      false 什么也没做
+      ans.push(arr[i]);
+      breadcrumbs[arr[i]] = true;
+    }
+  }
+  return ans.sort((a, b) => a - b);
+};
+
+uniqSort([4, 2, 2, 3, 2, 2]); // => [2, 3, 4]
+```
