@@ -121,3 +121,38 @@ const uniqSort = function(arr) {
 
 uniqSort([4, 2, 2, 3, 2, 2]); // => [2, 3, 4]
 ```
+
+Question 7
+
+1. Write a function takes an argument, n, and multiples in times 10
+
+```js
+const times10 = n => {
+  return n * 10;
+};
+
+console.log("times10 returns: ", times10(9));
+```
+
+Question 8
+
+1. Use an object to cache the results of your times10 function.
+2. Create a function that checks if the value for n has been calculated before.
+3. If the value for n has not been calculcated, calculate and then save the result in cache object.
+
+```js
+const cache = {};
+
+const memoTimes10 = n => {
+  if (n in cache) {
+    return cache[n];
+  } else {
+    let result = times10(n);
+    cache[n] = result;
+    return result;
+  }
+};
+
+console.log("Calculated value: ", memoTimes10(9));
+console.log("Cached value: ", memoTimes10(9));
+```
