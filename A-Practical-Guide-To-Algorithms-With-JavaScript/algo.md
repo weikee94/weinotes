@@ -145,8 +145,10 @@ const cache = {};
 
 const memoTimes10 = n => {
   if (n in cache) {
+    console.log("Fetching from cache:", n);
     return cache[n];
   } else {
+    console.log("Calculating result");
     let result = times10(n);
     cache[n] = result;
     return result;
@@ -155,4 +157,68 @@ const memoTimes10 = n => {
 
 console.log("Calculated value: ", memoTimes10(9));
 console.log("Cached value: ", memoTimes10(9));
+```
+
+Question 9 (need review)
+
+1. Clean up global scope by moving cache inside your function.
+2. Use a closure to return a function that you can call later.
+
+```js
+const memoizedClosureTimes10 = () => {
+  let cache = {};
+
+  return n => {
+    if (n in cache) {
+      console.log("Fetching from cache:", n);
+      return cache[n];
+    } else {
+      console.log("Calculating");
+      let result = n * 10;
+      cache[n] = result;
+      return result;
+    }
+  };
+};
+
+const memoClosureTimes10 = memoizedClosureTimes10();
+try {
+  console.log("calculated value: ", memoClosureTimes10(9));
+  console.log("cached value: ", memoClosureTimes10(9));
+} catch (e) {
+  console.error(e);
+}
+```
+
+Question 10 (need review)
+
+1. Make memo function generic and accept times10 function as a callback rather than defining the n \* 10 logic inside the if/else
+2. Take advantage of the fact that parameters are saved in the closure.
+
+```js
+const times10 = n => n * 10;
+
+const memoize = cb => {
+  let cache = {};
+  return n => {
+    if (n in cache) {
+      console.log("Fetching from cache:", n);
+      return cache[n];
+    } else {
+      console.log("Calculating result");
+      let result = cb(n);
+      cache[n] = result;
+      return result;
+    }
+  };
+};
+
+const memoizedTimes10 = memoize(times10);
+
+try {
+  console.log("Calculated value: ", memoizedTimes10(9));
+  console.log("Cached value: ", memoizedTimes10(9));
+} catch (e) {
+  console.error(e);
+}
 ```
