@@ -10,4 +10,4 @@ Interpreter Vs Compiler
 
 ![alt text][logo]
 
-[logo]: https://github.com/weikee94/weinotes/blob/master/advanced-js-concept/images/001-js-interpreter-compiler.jpg
+[logo]: https://github.com/weikee94/weinotes/blob/master/advanced-js-concept/images/002-js-interpreter-compiler.jpg
