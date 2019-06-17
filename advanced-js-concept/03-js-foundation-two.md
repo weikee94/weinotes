@@ -76,3 +76,170 @@ function test2() {
 test();
 test2();
 ```
+
+### Arguments Keyword
+
+```js
+// try to avoid using arguments (can replace using Array.from in example 1 or spread operator in example 2)
+function argFunction(a1, a2) {
+  console.log("arguments: ", arguments); // { 0: 'a', 1: 'b' }
+  console.log(Array.from(arguments)); // ["a", "b"]
+  return `${a1} and ${a2}`;
+}
+
+function argFunction2(...args) {
+  console.log("arguments: ", args); // ["a", "b"]
+}
+
+argFunction("a", "b");
+argFunction2("a", "b");
+```
+
+### Variable Environment
+
+```js
+function two() {
+  var isValid;
+}
+
+function one() {
+  var isValid = true;
+  two();
+}
+
+var isValid = false;
+one();
+
+// two -- undefined
+// one -- true
+// global -- false
+```
+
+### Scope Chain
+
+```js
+// function lexical environment
+function a() {
+  var a = "a";
+  return function b() {
+    var b = "b";
+    // console.log(c) this will throw reference error c is not defined
+    return function c() {
+      var c = "c";
+      // console.log(a) this will return a
+      return "c";
+    };
+  };
+}
+
+a()()(); // return c
+```
+
+### Function Scope vs Block Scope
+
+```js
+// function scope
+function a() {
+  var secretA = "woohoo";
+}
+
+secretA; // reference error secret is not defined
+
+if (1 > 0) {
+  var secret = "lala";
+}
+
+secret; // this will return lala
+
+// const and let using block scope
+if (2 > 0) {
+  const newSecret = "lala";
+  let anotherSecret = "land";
+}
+
+newSecret; // reference error newSecret is not defined
+anotherSecret; // reference error anotherSecret is not defined
+
+// block scoping example
+function loop() {
+  for (let i = 0; i < 2; i++) {
+    console.log(i);
+  }
+  console.log("final", i);
+}
+
+function loop2() {
+  for (var i = 0; i < 2; i++) {
+    console.log(i);
+  }
+  console.log("final", i);
+}
+
+loop();
+// --- result ---
+// 0
+// 1
+// reference error i is not defined because let is block scoping
+
+loop2();
+// --- result ---
+// 0
+// 1
+// final 2
+```
+
+### IIFE
+
+- immediately invoked function expression
+
+```js
+(function() {
+  var a = 1;
+})();
+
+a; // reference error, a is not defined because a is inside the function scope
+```
+
+### this
+
+- this refers to the object that the function is a property of
+
+```js
+obj.someFunc(this);
+
+const obj2 = {
+  name: "Wei",
+  sing() {
+    return "woohoo " + this.name;
+  },
+  singAgain() {
+    return this.sing() + "!";
+  }
+};
+
+obj2.sing();
+// woohoo Wei
+// trick to remember this
+// is whatever to the left of the dot which is the object that the function is a property of
+
+const name = "Jason";
+
+function importantPerson() {
+  console.log(this.name);
+}
+
+importantPerson(); // 'Jason'
+
+const obj3 = {
+  name: "Jacob",
+  importantPerson: importantPerson
+};
+
+const obj4 = {
+  name: "James",
+  importantPerson: importantPerson
+};
+
+obj3.importantPerson(); // 'Jacob'
+obj4.importantPerson(); // 'James'
+```
