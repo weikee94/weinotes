@@ -243,3 +243,76 @@ const obj4 = {
 obj3.importantPerson(); // 'Jacob'
 obj4.importantPerson(); // 'James'
 ```
+
+### Lexical Scope vs Dynamic Scope
+
+```js
+// function call is dynamic scope based on when the function been called
+const a = function() {
+  console.log("a", this);
+  const b = function() {
+    console.log("b", this);
+    const c = {
+      hi: function() {
+        console.log("c", this);
+      }
+    };
+    c.hi(); // {hi: f}
+  };
+  b(); // window object
+};
+
+a(); // window object
+
+const obj5 = {
+  name: "Adam",
+  sing() {
+    console.log("a", this); // {name: 'Adam', sing: f}
+    var anotherFunction = function() {
+      console.log("b", this); // window object
+    };
+    anotherFunction();
+  }
+};
+
+// In order to solve this bind to different thing we have three methods
+
+// method 1 (using es6 arrow function)
+const obj5 = {
+  name: "Adam",
+  sing() {
+    console.log("a", this); // {name: 'Adam', sing: f}
+    var anotherFunction = () => {
+      console.log("b", this); // {name: 'Adam', sing: f}
+    };
+    anotherFunction();
+  }
+};
+
+// method 2 using bind
+const obj5 = {
+  name: "Adam",
+  sing() {
+    console.log("a", this); // {name: 'Adam', sing: f}
+    var anotherFunction = () => {
+      console.log("b", this); // {name: 'Adam', sing: f}
+    };
+    return anotherFunction.bind(this);
+  }
+};
+
+// method 3 using reference like jQuery
+const obj5 = {
+  name: "Adam",
+  sing() {
+    console.log("a", this); // {name: 'Adam', sing: f}
+    var self = this;
+    var anotherFunction = () => {
+      console.log("b", self); // {name: 'Adam', sing: f}
+    };
+    return anotherFunction;
+  }
+};
+```
+
+### call, apply, bind
