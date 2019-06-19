@@ -316,3 +316,99 @@ const obj5 = {
 ```
 
 ### call, apply, bind
+
+- call and apply used when borrow method from other object
+- difference between call and apply, apply use array in second params
+- bind return function instead invoke
+- bind is useful for call the functions later on with a certain context
+
+```js
+const wizard = {
+  name: "Wii",
+  health: 50,
+  heal(num1, num2) {
+    return (this.health += num1 + num2);
+  }
+};
+
+const archer = {
+  name: "Arc",
+  health: 30
+};
+
+console.log("initial: ", archer);
+wizard.heal.call(archer, 30, 40);
+console.log("call: ", archer);
+wizard.heal.apply(archer, [100, 200]);
+console.log("apply: ", archer);
+var laterCallWizard = wizard.heal.bind(archer, 10, 10);
+laterCallWizard();
+console.log("bind: ", archer);
+
+const array = [1, 2, 3];
+
+function getMaxNumber(arr) {
+  console.log(Math.max.apply(null, array));
+}
+
+getMaxNumber(array);
+```
+
+### bind(), currying
+
+- function currying
+
+```js
+function multiply(a, b) {
+  return a * b;
+}
+
+let multipleTwo = multiply.bind(this, 2);
+console.log(multipleTwo(20)); // 40
+let multipleFour = multiply.bind(this, 4);
+console.log(multipleFour(20)); // 80
+```
+
+### Exercise this keyword
+
+```js
+//example 1
+var b = {
+  name: "jay",
+  say() {
+    console.log(this);
+  }
+};
+
+var c = {
+  name: "chou",
+  say() {
+    return function() {
+      console.log(this);
+    };
+  }
+};
+
+var d = {
+  name: "lun",
+  say() {
+    return () => console.log(this);
+  }
+};
+
+b.say(); // { name: 'jay', function }
+c.say()(); // window object (determine where it called)
+d.say()(); // arrow function is lexical scope ({ name: 'lun, function })
+
+//example 2
+const character = {
+  name: "Abc",
+  getCharacter() {
+    console.log(this); // { name: 'Abc', getCharacter: f }
+    return this.name;
+  }
+};
+
+const getValueFromAssignedVariable = character.getCharacter.bind(character);
+getValueFromAssignedVariable(); // { name: 'Abc', getCharacter: f }
+```
