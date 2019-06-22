@@ -1,0 +1,17 @@
+{
+  "name": "webpack-demo",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "bundle": "webpack"
+  },
+  "keywords": [],
+  "author": "weikee",
+  "license": "ISC",
+  "private": true,
+  "devDependencies": {
+    "file-loader": "^4.0.0",
+    "webpack": "^4.35.0",
+    "webpack-cli": "^3.3.4"
+  }
+}

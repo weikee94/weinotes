@@ -122,3 +122,24 @@ var user4 = { org: "dev", name: "nerd" };
 var eq2 = JSON.stringify(user3) === JSON.stringify(user4);
 console.log(eq2); // false
 ```
+
+### Type Coercion
+
+- convert certain type to another type
+- only happened when we use double equal (recommend always using triple equal when we do comparison)
+- for more details can look at this [js comparison table](https://dorey.github.io/JavaScript-Equality-Table/)
+
+```js
+1 == 1; //true
+1 == "1"; // false
+1 === "1"; // false
+false == ""; // true
+false == []; // true
+false == {}; // false
+"" == 0; // true
+"" == []; // true
+"" == {}; // false
+0 == []; // true
+0 == {}; // false
+0 == null; // false
+```
