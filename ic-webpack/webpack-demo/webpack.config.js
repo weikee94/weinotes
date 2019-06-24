@@ -1,3 +1,5 @@
+const HtmlWebpackPlugin = require("html-webpack-plugin");
+const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const path = require("path"); // 用来找path
 
 module.exports = {
@@ -47,6 +49,14 @@ module.exports = {
       }
     ]
   },
+  plugins: [
+    // 打包之前先清除dist folder
+    new CleanWebpackPlugin(),
+    // html 模版
+    new HtmlWebpackPlugin({
+      template: "src/index.html"
+    })
+  ],
   output: {
     filename: "bundle.js", //dest file name
     path: path.resolve(__dirname, "dist") //dest folder name

@@ -86,3 +86,36 @@ module.exports = {
 }
 
 ```
+
+### Webpack Plugins (-D = --save-dev)
+
+- plugins 会在某个时刻帮你做一些设定或事情
+- htmlWebpackPlugin 会在打包结束后，生成一个 html 文件，并把生成 js 放到 html 里面
+
+```js
+npm install html-webpack-plugin -D
+
+const HtmlWebpackPlugin = require("html-webpack-plugin");
+module.exports ={
+   plugins: [
+    // html 模版
+    new HtmlWebpackPlugin({
+      template: "src/index.html"
+    })
+  ],
+}
+```
+
+- cleanWebpackPlugin clean the old one before generate new one
+
+```js
+npm install clean-webpack-plugin -D
+
+const { CleanWebpackPlugin } = require("clean-webpack-plugin");
+module.exports ={
+   plugins: [
+    // 打包之前先清除dist folder
+    new CleanWebpackPlugin(),
+  ],
+}
+```
