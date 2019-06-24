@@ -119,3 +119,92 @@ module.exports ={
   ],
 }
 ```
+
+### Entry and output basic setup
+
+```js
+// entry
+module.exports = {
+  entry: {
+    main: "./src/index.js",
+    sub: "./src/index.js"
+  }
+};
+
+// output
+module.exports = {
+  output: {
+    // 这个是给你加前面的path
+    publicPath: "http://cdn.com",
+    // 这个可以依据entry修改file名
+    filename: "[name].js", //dest file name
+    path: path.resolve(__dirname, "dist") //dest folder name
+  }
+};
+
+// based on top settings it will generate below result
+ <script type="text/javascript" src="http://cdn.com/main.js"></script>
+ <script type="text/javascript" src="http://cdn.com/sub.js"></script>
+
+```
+
+### sourcemap setup
+
+- sourcemap 解决打包出错提示源代码的位置
+
+```js
+// source map 会生成.map 文件
+// inline 会把.map 合拼
+// cheap 只管理业务代码, 会显示第几行错了
+// module 会管除了业务代码，loader那些也一起
+
+// production cheap-module-source-map
+// development cheap-module-eval-source-map
+module.exports = {
+  devtool: "cheap-module-eval-source-map"
+};
+```
+
+### webpack dev server
+
+- build local server
+
+```js
+npm install webpack-dev-server -D
+module.exports = {
+  devServer: {
+    // the folder to run the local host
+    contentBase: "./dist",
+    // open true means auto open browser and point to the localhost
+    open: true
+  }
+};
+```
+
+### Hot Module Replacement (HMR)
+
+- update css only replace component instead refresh entire page
+
+```js
+// index (enable hmr)
+if (module.hot) {
+  module.hot.accept("./number", () => {
+    document.getElementById("number");
+    document.body.removeChild(document.getElementById("number"));
+    number();
+  });
+}
+
+const webpack = require("webpack");
+
+module.exports = {
+  devServer: {
+    hot: true,
+    hotOnly: true
+  },
+  plugins: [
+    // 热更新
+    new webpack.HotModuleReplacementPlugin()
+  ]
+};
+```
