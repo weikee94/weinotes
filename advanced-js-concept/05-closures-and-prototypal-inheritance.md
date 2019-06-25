@@ -103,4 +103,21 @@ function letPerson(person, fn) {
 }
 
 letPerson({ level: "admin", name: "James" }, auth);
+
+// multiply higher order functions
+const multiply = num1 => {
+  return num2 => {
+    return num2 * num1;
+  };
+};
+
+const multiplyBy4 = multiply(4);
+multiplyBy4(10); // 40
+multiplyBy4(3); // 12
+
+const multiplyBy5 = multiply(5);
+multiplyBy5(10); // 50
+multiplyBy5(3); // 15
 ```
+
+### Closures

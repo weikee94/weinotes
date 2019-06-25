@@ -208,3 +208,38 @@ module.exports = {
   ]
 };
 ```
+
+### ES6 to ES5 for older browser support (use babel)
+
+```js
+npm install --save-dev babel-loader @babel/core
+npm install @babel/preset-env --save-dev
+npm install --save @babel/polyfill
+
+// index.js
+import "@babel/polyfill";
+
+// webpack.config.js
+module.exports ={
+ module: {
+    rules: [
+      {
+        test: /\.js$/,
+        exclude: /node_modules/,
+        loader: "babel-loader",
+        options: {
+          presets: [
+            [
+              "@babel/preset-env",
+              {
+                // polyfills are automatically imported when needed.
+                // make the size smaller
+                useBuiltIns: "usage"
+              }
+            ]
+          ]
+        }
+      },
+    ]
+}
+```
