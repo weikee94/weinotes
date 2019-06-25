@@ -1,0 +1,11 @@
+{
+  "presets": [
+    [
+      "@babel/preset-env",
+      {
+        //polyfills are automatically imported when needed.
+        "useBuiltIns": "usage"
+      }
+    ]
+  ]
+}
