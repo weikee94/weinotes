@@ -4,8 +4,8 @@ const path = require("path");
 const webpack = require("webpack");
 
 module.exports = {
-  mode: "development",
-  devtool: "cheap-module-eval-source-map",
+  mode: "production",
+  devtool: "cheap-module-source-map",
   entry: {
     main: "./src/index.js"
     // sub: "./src/index.js"
@@ -85,6 +85,10 @@ module.exports = {
     }),
     new webpack.HotModuleReplacementPlugin()
   ],
+  // optimization: {
+  //   // tree shaking example
+  //   usedExports: true
+  // },
   output: {
     // publicPath: "http://cdn.com",
     filename: "[name].js", //dest file name

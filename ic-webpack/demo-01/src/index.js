@@ -14,7 +14,6 @@ import avatar from "./avatar.jpg";
 import createAvatar from "./createAvatar";
 import number from "./number";
 import "./style.css";
-import "@babel/polyfill";
 
 createAvatar();
 
@@ -49,3 +48,7 @@ if (module.hot) {
     number();
   });
 }
+
+import { add } from "./math";
+
+add(1, 2);

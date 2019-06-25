@@ -243,3 +243,56 @@ module.exports ={
     ]
 }
 ```
+
+### Preset-React
+
+```js
+npm install --save-dev @babel/preset-react
+
+// .babelrc
+{
+  "presets": [
+    "@babel/preset-react"
+  ]
+}
+
+// example if u have two preset
+// it will read start from below c->b->a
+{
+  "presets": [
+    "@babel/preset-a",
+    "@babel/preset-b",
+    "@babel/preset-c"
+  ]
+}
+```
+
+### Tree Shaking
+
+- only extract used modules
+- only support es module, not support commonJS
+- update setting in packagejson sideEffects (polyfill and css no need tree shaking)
+- in production no need setup optimization for tree shaking it will add by default
+
+```js
+// math.js
+const add = {};
+const minus = {};
+
+// index.js
+add(); // when go to bundle u still can find minus have been bundled
+
+// Tree shaking implementation
+// webpack.config.js
+module.exports = {
+  optimization: {
+    usedExports: true
+  }
+};
+// package.json
+{
+  // can accept array
+  // sideEffects: ["@babel/poly-fill","*.css"]
+  "sideEffects": false,
+}
+```
