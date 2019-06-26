@@ -1,20 +1,10 @@
+const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
-const path = require("path");
-const webpack = require("webpack");
 
 module.exports = {
-  mode: "production",
-  devtool: "cheap-module-source-map",
   entry: {
     main: "./src/index.js"
-    // sub: "./src/index.js"
-  },
-  devServer: {
-    contentBase: "./dist",
-    open: true,
-    hot: true,
-    hotOnly: true
   },
   module: {
     rules: [
@@ -82,13 +72,8 @@ module.exports = {
     // html 模版
     new HtmlWebpackPlugin({
       template: "src/index.html"
-    }),
-    new webpack.HotModuleReplacementPlugin()
+    })
   ],
-  // optimization: {
-  //   // tree shaking example
-  //   usedExports: true
-  // },
   output: {
     // publicPath: "http://cdn.com",
     filename: "[name].js", //dest file name

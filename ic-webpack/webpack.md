@@ -296,3 +296,31 @@ module.exports = {
   "sideEffects": false,
 }
 ```
+
+### Development vs Production Bundling Setting
+
+- seperate dev and prod.js
+- npm install webpack-merge -D
+
+```js
+// package json update command
+{
+  "scripts": {
+    "dev": "webpack-dev-server --config webpack.dev.js",
+    "prod": "webpack --config webpack.prod.js"
+  }
+}
+
+// webpack.prod.js
+const merge = require("webpack-merge");
+// 共用的放这里
+const commonConfig = require("./webpack.common.js");
+
+const prodConfig = {
+  mode: "production",
+  devtool: "cheap-module-source-map"
+};
+
+module.exports = merge(commonConfig, prodConfig);
+
+```
