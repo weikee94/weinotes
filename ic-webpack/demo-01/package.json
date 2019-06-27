@@ -5,11 +5,14 @@
   "description": "",
   "scripts": {
     "bundle": "webpack",
+    "analyse": "webpack --profile --json > stats.json",
+    "dev-build": "webpack --config webpack.dev.js",
     "dev": "webpack-dev-server --config webpack.dev.js",
     "prod": "webpack --config webpack.prod.js"
   },
   "devDependencies": {
     "@babel/core": "^7.4.5",
+    "@babel/plugin-syntax-dynamic-import": "^7.2.0",
     "@babel/preset-env": "^7.4.5",
     "autoprefixer": "^9.6.0",
     "babel-loader": "^8.0.6",
@@ -34,6 +37,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@babel/polyfill": "^7.4.4"
+    "@babel/polyfill": "^7.4.4",
+    "core-js": "^3.1.4",
+    "lodash": "^4.17.11"
   }
 }

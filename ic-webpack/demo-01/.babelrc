@@ -4,8 +4,10 @@
       "@babel/preset-env",
       {
         //polyfills are automatically imported when needed.
-        "useBuiltIns": "usage"
+        "useBuiltIns": "usage",
+        "corejs": 3
       }
     ]
-  ]
+  ],
+  "plugins": ["@babel/plugin-syntax-dynamic-import"]
 }

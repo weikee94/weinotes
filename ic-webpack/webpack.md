@@ -324,3 +324,187 @@ const prodConfig = {
 module.exports = merge(commonConfig, prodConfig);
 
 ```
+
+### Code splitting
+
+```js
+// lets say business logic is 1mb, third party is 1mb
+// it will bundle to main.js (total 2mb)
+// when we update business logic, user need reload (2mb)
+// but with code splitting
+// we bundle two js file one(business logic), one(third party)
+// when we update business logic, since thiry party remain same
+// user only need reload (1mb which is business logic js file)
+// example
+module.exports = {
+  entry: {
+    businesslogic: './src/index.js',
+    thirdparty: './src/thirdparty.js'
+  }
+}
+
+// two way doing code splitting
+// sync method: setting optimization in webpack.common.js
+// webpack setting enable code splitting
+module.exports = {
+   optimization: {
+    splitChunks: {
+      chunks: "all"
+    }
+  },
+}
+
+// async method: return import (not need do any changes)
+function getComponent() {
+  return import('lodash').then(({ default: _ }) => {
+    var element = document.createElement('div');
+    element.innerHTML = _.join(['a', 'b'], '-');
+    return element;
+  })
+}
+getComponent().then(element => {
+  document.body.appendChild(element)
+})
+
+// package.json (写这个目的是可以产出打包文件)
+{
+  "scripts": {
+    "dev-build": "webpack --config webpack.dev.js",
+  }
+}
+
+// webpack.common.js 想要回去上一级目录
+module.exports = {
+  output: {
+    path: path.resolve(__dirname, "../dist"); // 意思是去dist上一级
+  }
+}
+
+// 遇到cleanwebpack plugin show skipping error
+module.exports = {
+  plugins: [
+    // 打包之前先清除dist folder
+    new CleanWebpackPlugin(['dist'], {
+      root: path.resolve(__dirname, '../') // 这个意思是把root设成上一级再清除该级下的dist folder
+    }),
+  ],
+}
+
+// used for dynamic import
+npm install babel-plugin-dynamic-import-webpack -D
+// babelrc
+{
+  "plugins": ["dynamic-import-webpack"]
+}
+
+```
+
+### Split chunks plugins
+
+```js
+// official dynamic import plugin
+npm install --save-dev @babel/plugin-syntax-dynamic-import
+
+// babelrc
+{
+  "plugins": ["@babel/plugin-syntax-dynamic-import"]
+}
+
+// index.js inside that webpackChunkName is how u define the file name
+function getComponent() {
+  return import(/* webpackChunkName:"lodash" */ "lodash").then(
+    ({ default: _ }) => {
+      var element = document.createElement("div");
+      element.innerHTML = _.join(["a", "b"], "-");
+      return element;
+    }
+  );
+}
+
+// webpack.common.js
+module.exports = {
+  optimization: {
+    splitChunks: {
+      // chunks: "all", // 异步同步都适用
+      // chunks: "initial", // 同步
+      chunks: "async", // 异步
+      minSize: 30000, // 这个表示大过30kb就分割代码
+      minChunks: 1, // 至少用一次就分割
+      maxAsyncRequests: 5,
+      maxInitialRequests: 3,
+      automaticNameDelimiter: "~", // 文件连接符号
+      automaticNameMaxLength: 30,
+      name: true,
+      cacheGroups: {
+        // 当档案同时符合vendors default will based on priority decide using which one -10 > -20
+        vendors: {
+          test: /[\\/]node_modules[\\/]/, // 引入的库是在node modules 会调用这个
+          priority: -10 // 会生成 vendors~lodash.js
+          filename: 'vendors.js' // 会生成vendors.js
+        },
+        default: { // 不在node modules去这里
+          minChunks: 2,
+          priority: -20,
+          reuseExistingChunk: true
+          // a.js import c from 'c'
+          // b.js import c from 'c'
+          // 如果a模块引入c, b模块也同样使用, 就不必再引入多一次
+        }
+      }
+    }
+  },
+}
+```
+
+### Lazy Loading
+
+- by import to implement lazy loading
+
+```js
+// use es6 promise
+function getComponent() {
+  return import(/* webpackChunkName:"lodash" */ "lodash").then(
+    ({ default: _ }) => {
+      var element = document.createElement("div");
+      element.innerHTML = _.join(["a", "b"], "-");
+      return element;
+    }
+  );
+}
+
+// use es7 async await
+async function getComponent() {
+  const { default: _ } = await import(/* webpackChunkName:"lodash" */ "lodash");
+  var element = document.createElement("div");
+  element.innerHTML = _.join(["a", "b"], "-");
+  return element;
+}
+
+// vendors file get loaded when u click on the page
+document.addEventListener("click", () => {
+  getComponent().then(element => {
+    document.body.appendChild(element);
+  });
+});
+```
+
+### Webpack analyse, Preloading, Prefetching
+
+```js
+// package.json (this will generate json file which contain the
+// result based on analyse on ur webpack file)
+{
+  "scripts": {
+    "dev-build": "webpack --profile --json > stats.json --config webpack.dev.js"
+  }
+}
+
+// option one
+// webpack-bundle-analyzer
+
+// option two
+// put ur json file to here http://webpack.github.com/analyse for more details
+
+// option three
+// https://alexkuz.github.io/webpack-chart/
+```
