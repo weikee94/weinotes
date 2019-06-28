@@ -1,8 +1,11 @@
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
+const merge = require("webpack-merge");
+const devConfig = require("./webpack.dev.js");
+const prodConfig = require("./webpack.prod.js");
 
-module.exports = {
+const commonConfig = {
   entry: {
     main: "./src/index.js"
   },
@@ -26,39 +29,6 @@ module.exports = {
         }
       },
       {
-        test: /\.scss$/,
-        // 打包顺序-> postcss, sass, css, style 从下往上
-        use: [
-          // style-loader is used for 挂载
-          "style-loader",
-          {
-            loader: "css-loader",
-            options: {
-              // 为了解决import scss in scss file,
-              // 如果不加import loaders
-              // 会直接执行 css skip sass and postcss loader
-              importLoaders: 2
-              // 模块化引入css
-              // modules: true
-            }
-          },
-          "sass-loader",
-          // help us add prefix: -m, -webkit, etc ...
-          "postcss-loader"
-        ]
-      },
-      {
-        test: /\.css$/,
-        // 打包顺序-> postcss, sass, css, style 从下往上
-        use: [
-          // style-loader is used for 挂载
-          "style-loader",
-          {
-            loader: "css-loader"
-          }
-        ]
-      },
-      {
         test: /\.(eot|ttf|svg|woff|woff2)$/,
         use: {
           loader: "file-loader"
@@ -75,13 +45,30 @@ module.exports = {
     })
   ],
   optimization: {
+    // tree shaking example
+    usedExports: true,
     splitChunks: {
       chunks: "all"
+    },
+    runtimeChunk: {
+      //兼容老版本webpack4，把manifest打包到runtime里，不影响业务代码和第三方模块
+      name: "runtime"
     }
   },
   output: {
     // publicPath: "http://cdn.com",
-    filename: "[name].js", //dest file name
+    filename: "[name].[contenthash].js", //dest file name,
+    chunkFilename: "[name].chunk.js", //main.js异步加载的间接的js文件。用来打包import('module')方法中引入的模块
     path: path.resolve(__dirname, "dist") //dest folder name
+  }
+};
+
+module.exports = env => {
+  if (env && env.production) {
+    //线上环境
+    return merge(commonConfig, prodConfig);
+  } else {
+    //开发环境
+    return merge(commonConfig, devConfig);
   }
 };

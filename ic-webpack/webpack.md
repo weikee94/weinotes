@@ -137,7 +137,8 @@ module.exports = {
     // 这个是给你加前面的path
     publicPath: "http://cdn.com",
     // 这个可以依据entry修改file名
-    filename: "[name].js", //dest file name
+    filename: "[name].js", //dest file name,
+    chunkFilename: '[name].chunk.js',//main.js异步加载的间接的js文件。用来打包import('module')方法中引入的模块
     path: path.resolve(__dirname, "dist") //dest folder name
   }
 };
@@ -507,4 +508,164 @@ document.addEventListener("click", () => {
 
 // option three
 // https://alexkuz.github.io/webpack-chart/
+
+// Prefetch (example need investigate more)
+document.addEventListener("click", () => {
+  import(/* webpackPrefetch: true */ "./click.js").then(({ default: func }) => {
+    func();
+  });
+  // var element = document.createElement("div");
+  // element.innerHTML = "lala";
+  // document.body.appendChild(element);
+});
+```
+
+### CSS bundle
+
+```js
+//抽离css文件
+npm install --save-dev mini-css-extract-plugin
+//压缩css文件
+npm i optimize-css-assets-webpack-plugin -D
+
+// package.json
+{
+    "sideEffects": ["*.css"] //除了css文件，其余的都TreeShaking
+}
+
+// webpack.prod.js
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+
+module.exports = {
+  module: {
+    rules: [
+      {
+        test: /\.scss$/,
+        // 打包顺序-> postcss, sass, css, style 从下往上
+        use: [
+          // style-loader is used for 挂载
+          // "style-loader"
+          // 用minicss loader 替换style loader
+          MiniCssExtractPlugin.loader,
+          {
+            loader: "css-loader",
+            options: {
+              // 为了解决import scss in scss file,
+              // 如果不加import loaders
+              // 会直接执行 css skip sass and postcss loader
+              importLoaders: 2
+              // 模块化引入css
+              // modules: true
+            }
+          },
+          "sass-loader",
+          // help us add prefix: -m, -webkit, etc ...
+          "postcss-loader"
+        ]
+      },
+      {
+        test: /\.css$/,
+        // 打包顺序-> postcss, sass, css, style 从下往上
+        use: [
+          // style-loader is used for 挂载
+          // "style-loader",
+          MiniCssExtractPlugin.loader,
+          {
+            loader: "css-loader"
+          }
+        ]
+      }
+    ]
+  },
+  plugins: [new MiniCssExtractPlugin({
+      filename: '[name].css',//直接引用的css文件
+			chunkFilename: '[name].chunk.css'//间接引用的css文件
+  })]
+}
+
+// 压缩css
+const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
+module.exports = {
+  optimization: {
+    minimizer: [new OptimizeCSSAssetsPlugin({})]
+  },
+}
+
+```
+
+### Shimming
+
+```js
+module.exports = {
+  plugins: [
+    new webpack.ProvidePlugin({
+      $: "jquery", //发现模块中有$字符串，就自动引入iquery,就可以用jquery
+      _join: ["lodash", "join"] //_join代表lodash里的join方法
+    })
+  ]
+};
+
+// 如果想让每个js模块的this都指向window
+// npm install imports-loader -D
+
+module.exports = {
+  module: {
+    rules: [{
+			test: /\.js$/,
+			exclude: /node_modules/,
+			use: [
+        {
+				  loader: 'babel-loader'
+        },
+        {
+          //每个js模块的this都指向window
+				  loader: 'imports-loader?this=>window'
+        }
+      ]
+  }
+};
+```
+
+### Caching
+
+```js
+module.exports = {
+  output: {
+    filename: "[name].[contenthash].js", //源代码不变，hash值就不会变，解决浏览器缓存问题。打包上线时，用户只需要更新有变化的代码，没有变化的从浏览器缓存读取
+    chunkFilename: "[name].[contenthash].js"
+  }
+};
+
+module.exports = {
+  optimization: {
+    runtimeChunk: {
+      //兼容老版本webpack4，把manifest打包到runtime里，不影响业务代码和第三方模块
+      name: "runtime"
+    }
+  },
+  performance: false //禁止提示性能上的一些问题
+};
+```
+
+### Global Env
+
+```js
+// package.json
+{
+  "scripts": {
+    "dev-build": "webpack --config ./build/webpack.common.js",
+    "dev": "webpack-dev-server --config ./build/webpack.common.js",
+    "build": "webpack --env.production --config ./build/webpack.common.js" //通过--env.production,把环境变量传进去
+  },
+}
+
+// webpack.common.js
+module.exports = (env) => {
+	if(env && env.production) {//线上环境
+		return merge(commonConfig, prodConfig);
+	}else {//开发环境
+		return merge(commonConfig, devConfig);
+	}
+}
+
 ```

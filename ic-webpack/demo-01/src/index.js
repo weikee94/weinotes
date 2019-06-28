@@ -100,7 +100,8 @@ document.addEventListener("click", () => {
   import(/* webpackPrefetch: true */ "./click.js").then(({ default: func }) => {
     func();
   });
-  // var element = document.createElement("div");
-  // element.innerHTML = "lala";
-  // document.body.appendChild(element);
 });
+
+// Part Five CSS bundle
+import "./a.css";
+import "./b.css";
