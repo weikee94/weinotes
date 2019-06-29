@@ -610,18 +610,21 @@ module.exports = {
 
 module.exports = {
   module: {
-    rules: [{
-			test: /\.js$/,
-			exclude: /node_modules/,
-			use: [
-        {
-				  loader: 'babel-loader'
-        },
-        {
-          //每个js模块的this都指向window
-				  loader: 'imports-loader?this=>window'
-        }
-      ]
+    rules: [
+      {
+        test: /\.js$/,
+        exclude: /node_modules/,
+        use: [
+          {
+            loader: "babel-loader"
+          },
+          {
+            //每个js模块的this都指向window
+            loader: "imports-loader?this=>window"
+          }
+        ]
+      }
+    ]
   }
 };
 ```
@@ -668,4 +671,173 @@ module.exports = (env) => {
 	}
 }
 
+```
+
+### Library Bundle (demo-library)
+
+```js
+// webpack.config.js
+const path = require("path");
+
+module.exports = {
+  mode: "production",
+  entry: "./src/index.js",
+  externals: "lodash",
+  output: {
+    path: path.resolve(__dirname, "dist"),
+    filename: "library.js",
+    library: "root", //支持通过<scritp src=ilibrary. js'></script> 标签引入，在全局变量增加一个root变量
+    libraryTarget: "umd" //别人用的时候，通过任何形式引入库都可以，比如AMD，CMD，ES MODULE，Commonjs
+
+    // library: 'root',//打包生成全局变量root
+    // libraryTarget: 'this' //把全局变量root挂载到this上，可以填umd，this，window,global
+
+    // externals: {
+    // 	lodash:{
+    // 		root：'_', //是用script标签引入进来的，必须在全局注入一个 _ 变量，下面的library才能正常执行
+    // 		commonjs:'lodash',//在用commonjs规范引入是，名字必须是lodash
+    // 	}
+
+    // }
+  }
+};
+
+// package.json
+{
+  "main": "./dist/library.js", //最终要给别人使用的
+}
+
+```
+
+### Webpack PWA (demo-pwa)
+
+- using service worker technique to enable us offline view
+
+```js
+//模拟服务器
+npm i http-server -D
+//添加 workbox-webpack-plugin 插件，然后调整 webpack.config.js 文件
+npm install workbox-webpack-plugin --save-dev
+
+// package.json
+{
+ "start": "http-server dist",//在dist目录下运行http-server服务
+}
+
+// webpack.prod.js
+const WorkboxPlugin = require('workbox-webpack-plugin');
+module.exports = {
+  plugins: [s
+		new WorkboxPlugin.GenerateSW({
+			clientsClaim: true,
+			skipWaiting: true
+		})
+	],
+}
+
+// index.js initial service workers
+console.log("hello, PWA");
+
+if ("serviceWorker" in navigator) {
+  //如果浏览器支持serviceWorker，就执行以下代码
+  window.addEventListener("load", () => {
+    navigator.serviceWorker
+      .register("/service-worker.js")
+      .then(registration => {
+        //注册成功
+        console.log("service-worker registed");
+      })
+      .catch(error => {
+        //没注册成功
+        console.log("service-worker register error");
+      });
+  });
+}
+
+```
+
+### Webpack DevServer Proxy (demo-dev-proxy)
+
+- setup proxy server for development
+
+```js
+//向服务器发送axios请求 (make request to server through axios)
+npm i axios -D
+
+// webpack.config.js
+module.exports = {
+  devServer: {
+		contentBase: './dist',
+		open: true,
+		port: 8080,
+		hot: true,
+		hotOnly: true,
+	  proxy: { // 开发时方便接口转发，线上不用
+      '/react/api': { // 访问 /react/api 时，代理到 target 上
+				target: 'https://www.dell-lee.com',
+        secure: false, // 如果访问https 要setting secure to false
+        //对https协议的网址的请求的转发
+        //   拦截，请求的是html,不走代理直接返回  /index.html文件
+	      //   bypass: function(req, res, proxyOptions) {
+        //    if (req.headers.accept.indexOf('html') !== -1) {
+        //      console.log('Skipping proxy for browser request.');
+        //     return '/index.html';
+        //   }
+        //   },
+		    pathRewrite: {
+					'header.json': 'demo.json' // when calling header.json actually get demo.json data
+				},
+				changeOrigin: true,// 解决网站对接口的限制
+				headers: { // add headers config like login use case, cookies usage etc
+					host: 'www.dell-lee.com',
+				}
+			}
+		}
+	}
+}
+
+```
+
+### ESLint Webpack Setup (demo-eslint)
+
+```js
+// install eslint
+npm i eslint -D
+npm i babel-eslint -D
+npm i eslint-loader -D
+
+// 快速生成eslint配置
+npx eslint --init
+
+// .eslintrc.js
+module.exports = {
+	"extends": "airbnb", // 用的是airbnb standard
+  "parser": "babel-eslint",
+  "rules": {
+    "react/prefer-stateless-function": 0, // allow disable statless function warning
+    "react/jsx-filename-extension": 0
+  },
+  globals: {
+    document: false // allow directly use document.getElementByID('root')
+  }
+};
+
+// install plugins in vsc
+module.exports = {
+  devServer: {
+	  overlay: true // when open browser it will show error information
+	},
+  rules: [{
+			test: /\.js$/,
+			exclude: /node_modules/,
+			use: ['babel-loader', 'eslint-loader'] // 先检查代码写的是否规范，在转换成es5
+		}
+  ]
+}
+
+```
+
+### Webpack Optimization
+
+```js
 ```
