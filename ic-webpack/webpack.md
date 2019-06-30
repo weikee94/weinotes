@@ -839,5 +839,116 @@ module.exports = {
 
 ### Webpack Optimization
 
+- 跟上技术的迭代（Node，Npm，Yarn) (constantly update used packages)
+- 在尽可能少的模块上应用 Loader (use whatever need loader)
+- Plugin 尽可能精简并确保可靠 (try use official plugin)
+- resolve 参数合理配置
+- 使用 DLLPlugin 提高打包速度 (third party only bundle one time)
+
 ```js
+// Overall Process
+// run npm run build:dll 生成对应的 XXX.dll.js 和 XXX.manifest.json 文件。
+// 以后再执行 npm run build 或 npm run dev 时，就不用再node_modules查找对应模块进行分析，
+// 直接用打包好的 XXX.dll.js就可以，节省打包速度。
+
+// npm i add-asset-html-webpack-plugin --save
+// create webpack.dll.js 文件：把第三方模块单独进行打包，生成一个vendors.dll.js 文件，all third party inside this file
+// webpack.dll.js
+const path = require("path");
+const webpack = require("webpack");
+
+module.exports = {
+  mode: "production",
+  entry: {
+    vendors: ["lodash"],
+    react: ["react", "react-dom"],
+    jquery: ["jquery"]
+  },
+  output: {
+    filename: "[name].dll.js",
+    path: path.resolve(__dirname, "../dll"),
+    library: "[name]" //打包生成的库名，通过全局变量的形式暴露到全局
+  },
+  plugins: [
+    new webpack.DllPlugin({
+      //对暴露到全局的代码进行分析，生成vendors.manifest.json 的映射文件，
+      name: "[name]",
+      path: path.resolve(__dirname, "../dll/[name].manifest.json")
+    })
+  ]
+};
+
+// webpack.common.js
+const AddAssetHtmlWebpackPlugin = require("add-asset-html-webpack-plugin");
+const files = fs.readdirSync(path.resolve(__dirname, "../dll"));
+files.forEach(file => {
+  if (/.*\.dll.js/.test(file)) {
+    plugins.push(
+      new AddAssetHtmlWebpackPlugin({
+        //将打包好的dll文件挂载到html中
+        filepath: path.resolve(__dirname, "../dll", file)
+      })
+    );
+  }
+  if (/.*\.manifest.json/.test(file)) {
+    plugins.push(
+      new webpack.DllReferencePlugin({
+        //分析第三方模块是否已经在dll文件里，如果里面有就不用再node_modules在分析打包了
+        manifest: path.resolve(__dirname, "../dll", file)
+      })
+    );
+  }
+});
+
+// package.json;
+{
+  "scripts": {
+    "build:dll": "webpack --config ./build/webpack.dll.js"
+  }
+}
+
+// webpack.dll.js
+// DllPlugin插件： 用于打包出一个个动态连接库
+// DllReferencePlugin: 在配置文件中引入DllPlugin插件打包好的动态连接库
+
+module.exports = {
+  mode: "production",
+  entry: {
+    vendors: ["lodash"], // lodash模块打包到一个动态连接库
+    react: ["react", "react-dom"],
+    jquery: ["jquery"]
+  },
+  output: {
+    filename: "[name].dll.js", // 输出动态连接库的文件名称
+    path: path.resolve(__dirname, "../dll"),
+    library: "[name]" // 全局变量名称
+  },
+  plugins: [
+    new webpack.DllPlugin({
+      name: "[name]", // 和output.library中一致，值就是输出的manifest.json中的 name值
+      path: path.resolve(__dirname, "../dll/[name].manifest.json")
+    })
+  ]
+};
+
+// webpack.common.js
+module.exports = {
+  plugins: [
+    new webpack.DllReferencePlugin({
+      manifest: require(path.join(__dirname, "dist", "react.manifest.json"))
+    })
+  ]
+};
 ```
+
+- 控制包文件大小
+
+```js
+// 配置 Tree shaking，把用不到的代码去除掉。配置 SplitChunksPlugin
+```
+
+- thread-loader，parallel-webpack，happypack 多进程打包
+- 合理使用 sourceMap
+- 结合 stats 分析打包结果
+- 开发环境内存编译
+- 开发环境无用插件剔除
