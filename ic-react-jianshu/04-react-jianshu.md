@@ -235,3 +235,101 @@ export default (state = defaultState, action) => {
   return state;
 };
 ```
+
+### CombineReducers
+
+```js
+import { combineReducers } from "redux";
+import headerReducer from "../common/header/store/reducer";
+
+const reducer = combineReducers({
+  header: headerReducer
+});
+
+export default reducer;
+```
+
+### Immutable js 不可改变对象
+
+```js
+// index.js (use .get)
+
+const mapStateToProps = state => {
+  return {
+    focused: state.header.get("focused")
+  };
+};
+
+// reducer.js
+import * as constants from "./constants";
+import { fromJS } from "immutable";
+
+const defaultState = fromJS({
+  focused: false
+});
+
+export default (state = defaultState, action) => {
+  if (action.type === constants.SEARCH_FOCUS) {
+    // immutable 对象的set方法会结合之前immutable对象的值和设置的值
+    // 返回一个全新对象
+    return state.set("focused", true);
+    // 下面这个方法是直接修改之前对象的state
+    // return {
+    //   focused: true
+    // };
+  }
+  if (action.type === constants.SEARCH_BLUR) {
+    return state.set("focused", false);
+    // return {
+    //   focused: false
+    // };
+  }
+  return state;
+};
+```
+
+### Redux-Immutable
+
+> combineReducers from redux-immutable
+
+```js
+// reducer.js
+import { combineReducers } from "redux-immutable";
+import { reducer as headerReducer } from "../common/header/store";
+
+const reducer = combineReducers({
+  header: headerReducer
+});
+
+export default reducer;
+
+// index.js (method one)
+const mapStateToProps = state => {
+  return {
+    focused: state.get("header").get("focused")
+  };
+};
+
+// index.js (method two)
+const mapStateToProps = state => {
+  return {
+    focused: state.getIn(["header", "focused"])
+  };
+};
+```
+
+### Redux-thunk
+
+```js
+// without redux thunk we only able return object
+export const searchBlur = () => ({
+  type: constants.SEARCH_BLUR
+});
+
+// with redux thunk we able to return a function instead of object
+export const getList = () => {
+  return dispatch => {
+    console.log(123);
+  };
+};
+```
