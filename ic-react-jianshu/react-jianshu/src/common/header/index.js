@@ -2,6 +2,8 @@ import React, { Component } from "react";
 import { CSSTransition } from "react-transition-group";
 import { connect } from "react-redux";
 import { actionCreators } from "./store";
+import { actionCreators as loginActionCreators } from "../../pages/login/store";
+import { Link } from "react-router-dom";
 import {
   HeaderWrapper,
   Logo,
@@ -73,11 +75,21 @@ class Header extends Component {
   render() {
     return (
       <HeaderWrapper>
-        <Logo />
+        <Link to="/">
+          <Logo />
+        </Link>
         <Nav>
           <NavItem className="left active">Home</NavItem>
           <NavItem className="left">Download</NavItem>
-          <NavItem className="right">Login</NavItem>
+          {this.props.login ? (
+            <NavItem className="right" onClick={this.props.logout}>
+              退出
+            </NavItem>
+          ) : (
+            <Link to="/login">
+              <NavItem className="right">登录</NavItem>
+            </Link>
+          )}
           <NavItem className="right">
             <i className="iconfont">&#xe636;</i>
           </NavItem>
@@ -104,11 +116,13 @@ class Header extends Component {
           </SearchWrapper>
         </Nav>
         <Addition>
-          <Button className="writing">
-            <i className="iconfont">&#xe610;</i>
-            Writing
-          </Button>
-          <Button className="reg">Register</Button>
+          <Link to="/write">
+            <Button className="writting">
+              <i className="iconfont">&#xe610;</i>
+              Writing
+            </Button>
+          </Link>
+          <Button className="register">Register</Button>
         </Addition>
       </HeaderWrapper>
     );
@@ -121,7 +135,8 @@ const mapStateToProps = state => {
     list: state.getIn(["header", "list"]),
     page: state.getIn(["header", "page"]),
     mouseIn: state.getIn(["header", "mouseIn"]),
-    totalPage: state.getIn(["header", "totalPage"])
+    totalPage: state.getIn(["header", "totalPage"]),
+    login: state.getIn(["login", "login"])
   };
 };
 
@@ -154,6 +169,9 @@ const mapDispatchToProps = dispatch => {
       } else {
         dispatch(actionCreators.changePage(1));
       }
+    },
+    logout() {
+      dispatch(loginActionCreators.logout());
     }
   };
 };
