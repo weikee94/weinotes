@@ -13,6 +13,12 @@ export default class HomePage extends Component {
             navigation.navigate("Page1", { name: "动态" });
           }}
         />
+        <Button
+          title={"Flat List Here"}
+          onPress={() => {
+            navigation.navigate("FlatListDemo", { name: "动态" });
+          }}
+        />
       </View>
     );
   }

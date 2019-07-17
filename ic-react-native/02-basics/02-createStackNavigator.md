@@ -9,5 +9,8 @@
 - "react-native": "0.58.0",
 - "react-native-gesture-handler": "^1.0.12",
 - "react-navigation": "^3.0.9"
+
+### How to start the app
+
 - npm run start
 - react-native run-ios
