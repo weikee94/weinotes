@@ -5,12 +5,14 @@ import {
   FlatList,
   StyleSheet,
   RefreshControl,
-  ActivityIndicator
+  ActivityIndicator,
+  SwipeableFlatList,
+  TouchableHighlight
 } from "react-native";
 
 const CITY_NAMES = ["a", "b", "c", "d"];
 
-export default class FlatListDemo extends Component {
+export default class SwipeableDemo extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -62,10 +64,26 @@ export default class FlatListDemo extends Component {
       </View>
     );
   }
+
+  genQuickActions() {
+    return (
+      <View style={styles.quickContainer}>
+        <TouchableHighlight
+          onPress={() => {
+            alert("Confirm delete?");
+          }}
+        >
+          <View style={styles.quick}>
+            <Text style={styles.text}>delete</Text>
+          </View>
+        </TouchableHighlight>
+      </View>
+    );
+  }
   render() {
     return (
       <View style={styles.container}>
-        <FlatList
+        <SwipeableFlatList
           data={this.state.dataArray}
           renderItem={data => this._renderItem(data)}
           refreshControl={
@@ -84,6 +102,9 @@ export default class FlatListDemo extends Component {
           onEndReached={() => {
             this.loadData();
           }}
+          renderQuickActions={() => this.genQuickActions()}
+          maxSwipeDistance={100}
+          bounceFirstRowOnMount={false}
         />
       </View>
     );
@@ -96,7 +117,7 @@ const styles = StyleSheet.create({
   },
   item: {
     backgroundColor: "#169",
-    height: 200,
+    height: 80,
     marginRight: 15,
     marginLeft: 15,
     marginBottom: 15,
@@ -112,5 +133,20 @@ const styles = StyleSheet.create({
   },
   indicator: {
     margin: 10
+  },
+  quick: {
+    backgroundColor: "red",
+    flex: 1,
+    alignItems: "flex-end",
+    justifyContent: "center",
+    padding: 10,
+    width: 200
+  },
+  quickContainer: {
+    flex: 1,
+    flexDirection: "row",
+    justifyContent: "flex-end",
+    marginRight: 15,
+    marginBottom: 15
   }
 });

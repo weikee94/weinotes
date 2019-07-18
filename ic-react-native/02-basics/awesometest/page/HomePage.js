@@ -19,6 +19,18 @@ export default class HomePage extends Component {
             navigation.navigate("FlatListDemo", { name: "动态" });
           }}
         />
+        <Button
+          title={"Swipeable list here"}
+          onPress={() => {
+            navigation.navigate("SwipeableDemo");
+          }}
+        />
+        <Button
+          title={"Section list demo"}
+          onPress={() => {
+            navigation.navigate("SectionListDemo");
+          }}
+        />
       </View>
     );
   }
