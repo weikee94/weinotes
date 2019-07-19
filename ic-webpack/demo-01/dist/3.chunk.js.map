@@ -1,1 +1,0 @@
-{"version":3,"file":"3.chunk.js","sources":["webpack:///./src/click.js"],"sourcesContent":["function clickHandler() {\n  var element = document.createElement(\"div\");\n  element.innerHTML = \"lalalala\";\n  document.body.appendChild(element);\n}\n\nexport default clickHandler;\n"],"mappings":";;;;;;AAAA;AAAA;AACA;AACA;AACA;AACA;AACA;AACA;;;;A","sourceRoot":""}
