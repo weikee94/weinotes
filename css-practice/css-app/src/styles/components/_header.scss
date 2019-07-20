@@ -1,4 +1,11 @@
-.header__title {
-  font-size: 12px;
-  color: $grey;
+.header__section {
+  background: red;
+
+  &--title {
+    color: $grey;
+    font: {
+      size: 12px;
+      weight: bold;
+    }
+  }
 }
