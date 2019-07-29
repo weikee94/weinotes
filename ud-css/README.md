@@ -33,3 +33,107 @@ body {
   clip-path: polygon(0 0, 100% 0, 100% 80%, 0 100%);
 }
 ```
+
+### Center Anything
+
+```css
+.text-box {
+  position: absolute;
+  /* top and left is relative to parent element */
+  top: 40%;
+  left: 50%;
+  /* translate that percentage is element itself */
+  transform: translate(-50%, -50%);
+}
+```
+
+### CSS Animation (@keyframes and animation property)
+
+```css
+.heading-primary {
+  color: #fff;
+  text-transform: uppercase;
+
+  /* quick fix for the element jumping */
+  backface-visibility: hidden;
+}
+
+.heading-primary-sub {
+  display: block;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 17.4px;
+
+  /* one line version */
+  animation: moveInRight 1s ease-out;
+
+  /*
+  animation-name: moveInLeft;
+  animation-duration: 1s;
+  animation-timing-function: ease-out;
+  animation-delay: 3s;
+  animation-iteration-count: 3;
+  */
+}
+
+@keyframes moveInLeft {
+  0% {
+    opacity: 0;
+    transform: translateX(-100px);
+  }
+
+  80% {
+    transform: translateX(10px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translate(0);
+  }
+}
+
+@keyframes moveInRight {
+  0% {
+    opacity: 0;
+    transform: translateX(100px);
+  }
+
+  80% {
+    transform: translateX(-10px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translate(0);
+  }
+}
+```
+
+### Pseudo-elements ::after
+
+> :this is what we called pseudo class
+
+```css
+.btn:link,
+.btn:visited {
+  text-transform: uppercase;
+  text-decoration: none;
+  padding: 15px 40px;
+  display: inline-block;
+  border-radius: 100px;
+
+  /* transition state need to specify in initial state */
+  transition: all 0.2s ease-out;
+}
+
+.btn:hover {
+  transform: translateY(-3px);
+  /* xposition yposition blur color */
+  box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.btn:active {
+  transform: translateY(-1px);
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+}
+```
