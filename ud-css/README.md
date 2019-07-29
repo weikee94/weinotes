@@ -1,12 +1,8 @@
-/*
-COLORS:
+### CSS
 
-Light green: #7ed56f
-Medium green: #55c57a
-Dark green: #28b485
+> Before starting project you can either use normalize.css to reset or write yourself
 
-*/
-
+```css
 * {
   margin: 0;
   padding: 0;
@@ -19,18 +15,21 @@ body {
   font-size: 16px;
   line-height: 1.7;
   color: #777;
-  padding: 30px;
 }
+```
 
+### Clip Path and Linear Gradient
+
+```css
 .header {
   height: 95vh;
   background-image: linear-gradient(
       to right bottom,
       rgba(126, 213, 111, 0.81),
       rgba(40, 180, 133, 0.81)
-    ),
-    url("../img/hero.jpg");
+    ), url("../img/hero.jpg");
   background-size: cover;
   background-position: top;
   clip-path: polygon(0 0, 100% 0, 100% 80%, 0 100%);
 }
+```
