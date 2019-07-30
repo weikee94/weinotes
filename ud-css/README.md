@@ -137,3 +137,37 @@ body {
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
 }
 ```
+
+> ::after, content and display is a must attributes to have
+
+```css
+.btn::after {
+  content: "";
+  display: inline-block;
+  height: 100%;
+  width: 100%;
+  border-radius: 100px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: -1;
+  transition: all 0.4s ease-out;
+}
+
+.btn-white::after {
+  background-color: #fff;
+}
+
+.btn:hover::after {
+  transform: scaleX(1.4) scaleY(1.6);
+  opacity: 0;
+}
+
+.btn-animated {
+  /* animation name, animation duration, animation timing function, animation delay */
+  animation: moveInTop 1s ease-out 0.25s;
+
+  /* this will automatically apply the styles to zero percent before the animation starts */
+  animation-fill-mode: backwards;
+}
+```
