@@ -121,3 +121,6 @@ multiplyBy5(3); // 15
 ```
 
 ### Closures
+
+```js
+```

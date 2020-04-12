@@ -29,15 +29,15 @@ app.get("", (req, res) => {
 
 app.get("/about", (req, res) => {
   res.render("about", {
-    title: "About APP",
+    title: "About",
     name: "Wei",
   });
 });
 
 app.get("/help", (req, res) => {
   res.render("help", {
-    title: "Help title",
-    msg: "Help message",
+    title: "Help",
+    msg: "Anything.",
     name: "Wei",
   });
 });
@@ -49,23 +49,26 @@ app.get("/weather", (req, res) => {
     });
   }
 
-  geocode(req.query.address, (error, { latitude, longitude, location }) => {
-    if (error) {
-      return res.send({ error });
-    }
-
-    forecast(latitude, longitude, (error, forecastData) => {
+  geocode(
+    req.query.address,
+    (error, { latitude, longitude, location } = {}) => {
       if (error) {
         return res.send({ error });
       }
 
-      res.send({
-        location: location,
-        forecast: forecastData,
-        address: req.query.address,
+      forecast(latitude, longitude, (error, forecastData) => {
+        if (error) {
+          return res.send({ error });
+        }
+
+        res.send({
+          location: location,
+          forecast: forecastData,
+          address: req.query.address,
+        });
       });
-    });
-  });
+    }
+  );
 });
 
 app.get("/help/*", (req, res) => {
