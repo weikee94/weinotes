@@ -17,6 +17,10 @@ const User = mongoose.model("User", {
       }
     },
   },
+  age: {
+    type: String,
+    default: 0,
+  },
 });
 
 module.exports = User;
