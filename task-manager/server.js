@@ -4,7 +4,7 @@ const connectDB = require("./config/db");
 const userRouter = require("./src/routers/user");
 const taskRouter = require("./src/routers/task");
 
-const PORT = 5000;
+const port = process.env.PORT;
 
 const app = express();
 app.use(express.json()); // json body usage
@@ -16,4 +16,4 @@ app.use(taskRouter);
 
 app.get("/", (req, res) => res.send("API RUNNING"));
 
-app.listen(PORT, () => console.log("server running"));
+app.listen(port, () => console.log(`server running ${port}`));
