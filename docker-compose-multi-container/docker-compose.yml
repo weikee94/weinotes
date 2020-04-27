@@ -1,0 +1,14 @@
+# version is used spcify docker compose version
+# services to defined different container
+# build . means use current directory docker file
+# - dash sign for specify array
+# there are four types for restart ('no', always, on-failure, unless-stopped)
+version: "3"
+services:
+  redis-server:
+    image: "redis"
+  node-app:
+    restart: "no"
+    build: .
+    ports:
+      - "8081:8081"
