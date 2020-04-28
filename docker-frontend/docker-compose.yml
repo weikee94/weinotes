@@ -1,0 +1,18 @@
+version: "3"
+services:
+  # can put whatever name we like for the services
+  web:
+    # https://github.com/facebook/create-react-app/issues/8688
+    stdin_open: true
+    # will look for docker file, in below example is current directory
+    build:
+      context: .
+      # when using custom dockerfile name need specify dockerfile
+      dockerfile: Dockerfile.dev
+    ports:
+      - "3000:3000"
+    volumes:
+      # do not overwrite docker container node_modules
+      - /app/node_modules
+      # map current directory folder to docker container
+      - .:/app
