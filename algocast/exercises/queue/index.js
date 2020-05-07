@@ -8,6 +8,18 @@
 //     q.add(1);
 //     q.remove(); // returns 1;
 
-class Queue {}
+class Queue {
+  // when initialize instance will call this constructor function
+  constructor() {
+    // we will using array methods to implement que function
+    this.data = [];
+  }
+  add(record) {
+    this.data.unshift(record);
+  }
+  remove() {
+    return this.data.pop();
+  }
+}
 
 module.exports = Queue;
