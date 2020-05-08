@@ -103,6 +103,71 @@ class LinkedList {
     }
     return null;
   }
+
+  removeAt(index) {
+    if (!this.head) {
+      return;
+    }
+
+    if (index === 0) {
+      this.head = this.head.next;
+      return;
+    }
+
+    let previous = this.getAt(index - 1);
+    if (!previous || !previous.next) {
+      // handling remove index which is out of range
+      return;
+    }
+    let node = this.head;
+    let current = 0;
+    while (node) {
+      if (current === index) {
+        return (previous.next = previous.next.next);
+      }
+      current++;
+      node = node.next;
+    }
+  }
+
+  insertAt(data, index) {
+    if (!this.head) {
+      this.head = new Node(data);
+      return;
+    }
+
+    if (index === 0) {
+      this.head = new Node(data, this.head);
+      return;
+    }
+
+    let previous = this.getAt(index - 1);
+    if (!previous || !previous.next) {
+      let node = this.getLast();
+      return (node.next = new Node(data));
+    }
+    let node = new Node(data, previous.next);
+    previous.next = node;
+  }
+
+  forEach(fn) {
+    let node = this.head;
+    let counter = 0;
+    while (node) {
+      // 循環在這裏發生
+      fn(node, counter);
+      node = node.next;
+      counter++;
+    }
+  }
+
+  *[Symbol.iterator]() {
+    let node = this.head;
+    while (node) {
+      yield node;
+      node = node.next;
+    }
+  }
 }
 
 module.exports = { Node, LinkedList };
